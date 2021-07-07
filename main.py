@@ -1,7 +1,7 @@
+import click
 import requests
 import os
 import urllib3
-import time
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -18,22 +18,44 @@ ACCESS_TOKEN = response.json()["access_token"]
 
 headers = {"Authorization": "Bearer {}".format(ACCESS_TOKEN)}
 
-# response = requests.get(APIURL + "/users/current", headers=headers, verify=False)
-# print(response.json())
 
-hasNext = True
-nextSkip = 0
-while hasNext == True:
-    response = requests.get(
-        # APIURL + "/secrets?filter.folderId=47&filter.includeSubFolders=True",
-        APIURL + "/folders?filter.parentFolderId=47&take=100&skip={}".format(nextSkip),
-        headers=headers,
-        verify=False,
-    )
-    for r in response.json()["records"]:
-        if r["inheritPermissions"] == False:
-            print(r["folderPath"])
-    #    print(response.json()["skip"])
-    hasNext = response.json()["hasNext"]
-    nextSkip = response.json()["nextSkip"]
-#    break
+@click.group()
+def cli():
+    """Tool to query Thycotic Secret Server"""
+    pass
+
+
+@cli.command()
+@click.argument("foo")
+def test(foo):
+    click.echo(foo)
+
+
+@cli.command()
+# @click.option("--folderid", default=0, help="parent folder id")
+@click.argument("parent_folder_id")
+def folder(parent_folder_id):
+    """Show child folders that do not inherit from parent"""
+    hasNext = True
+    nextSkip = 0
+    while hasNext == True:
+        params = {
+            "filter.parentFolderId": parent_folder_id,
+            "take": 100,
+            "skip": nextSkip,
+        }
+        response = requests.get(
+            APIURL + "/folders",
+            params=params,
+            headers=headers,
+            verify=False,
+        )
+        for r in response.json()["records"]:
+            if r["inheritPermissions"] == False:
+                print(r["folderPath"])
+        hasNext = response.json()["hasNext"]
+        nextSkip = response.json()["nextSkip"]
+
+
+if __name__ == "__main__":
+    cli()
