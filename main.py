@@ -26,9 +26,30 @@ def cli():
 
 
 @cli.command()
-@click.argument("foo")
-def test(foo):
-    click.echo(foo)
+@click.argument("parent_folder_id")
+def secret(parent_folder_id):
+    """Show secrets that do not inherit from parent"""
+    hasNext = True
+    nextSkip = 0
+    while hasNext == True:
+        params = {
+            "filter.folderId": parent_folder_id,
+            "filter.includeSubFolders": True,
+            "take": 100,
+            "skip": nextSkip,
+        }
+        response = requests.get(
+            APIURL + "/secrets",
+            params=params,
+            headers=headers,
+            verify=False,
+        )
+        for r in response.json()["records"]:
+            if r["inheritsPermissions"] == False:
+                print(f'{r["id"]:<1} {r["name"]}')
+        hasNext = response.json()["hasNext"]
+        nextSkip = response.json()["nextSkip"]
+        # break
 
 
 @cli.command()
