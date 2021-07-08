@@ -32,10 +32,9 @@ def test(foo):
 
 
 @cli.command()
-# @click.option("--folderid", default=0, help="parent folder id")
 @click.argument("parent_folder_id")
 def folder(parent_folder_id):
-    """Show child folders that do not inherit from parent"""
+    """Show folders that do not inherit from parent"""
     hasNext = True
     nextSkip = 0
     while hasNext == True:
