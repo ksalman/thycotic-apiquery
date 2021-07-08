@@ -6,9 +6,9 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-USER = os.environ["TUSER"]
-PASS = os.environ["TPASS"]
-URL = os.environ["TURL"]
+USER = os.environ["THYCOTIC_USER"]
+PASS = os.environ["THYCOTIC_PASS"]
+URL = os.environ["THYCOTIC_URL"]
 TOKENURL = URL + "/SecretServer/oauth2/token"
 APIURL = URL + "/SecretServer/api/v1"
 
