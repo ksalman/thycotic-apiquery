@@ -49,7 +49,6 @@ def secret(parent_folder_id):
                 print(f'{r["id"]:<1} {r["name"]}')
         hasNext = response.json()["hasNext"]
         nextSkip = response.json()["nextSkip"]
-        # break
 
 
 @cli.command()
