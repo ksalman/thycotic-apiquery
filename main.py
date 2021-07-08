@@ -71,7 +71,7 @@ def folder(parent_folder_id):
         )
         for r in response.json()["records"]:
             if r["inheritPermissions"] == False:
-                print(r["folderPath"])
+                print(f'{r["id"]:<1} {r["folderPath"]}')
         hasNext = response.json()["hasNext"]
         nextSkip = response.json()["nextSkip"]
 
